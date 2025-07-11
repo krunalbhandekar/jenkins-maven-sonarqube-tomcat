@@ -1,0 +1,38 @@
+pipeline {
+    agent { label 'maven-sonarqube' }
+
+    stages {
+        stage('Git Pull') {
+            steps {
+                git '<your-git-repo-url>'
+            }
+        }
+
+        stage('build') {
+            steps {
+                sh '/opt/maven/bin/mvn clean package'
+            }
+        }
+
+        stage('test') {
+            steps {
+                withSonarQubeEnv(installationName: 'sonar', credentialsId: 'sonar-cred') {}
+            }
+        }
+
+        stage('deploy') {
+            steps {
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat', path: '', url: 'http://3.109.108.232:8080/')], contextPath: '/', war: '**/*.war'
+            }
+        }
+
+        stage('Artifact-s3') {
+            steps {
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh 'aws s3 ls'
+                    sh 'aws s3 cp /home/ubuntu/workspace/<project-name>/target/<.war file name. eg:studentapp-2.2-SNAPSHOT.war> s3://<s3-bucket-name>'
+                }
+            }
+        }
+    }
+}

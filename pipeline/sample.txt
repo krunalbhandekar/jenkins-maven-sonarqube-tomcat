@@ -1,0 +1,35 @@
+pipeline {
+    agent { label 'maven-sonarqube' }
+
+    stages {
+        stage('Git Pull') {
+            steps {
+                git '<your-git-repo-url>'
+            }
+        }
+
+        stage('build') {
+            steps {
+                sh '/opt/maven/bin/mvn clean package'
+            }
+        }
+
+        stage('test') {
+            steps {
+
+            }
+        }
+
+        stage('deploy') {
+            steps {
+
+            }
+        }
+
+        stage('Artifact-s3') {
+            steps {
+
+            }
+        }
+    }
+}

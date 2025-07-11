@@ -273,7 +273,7 @@ cd /opt/apache-tomcat-9.0.107/conf/
 vim tomcat-users.xml
 ```
 
-Paste following lines at bottom (before </tomcat-users>)
+Paste following lines at bottom (before `</tomcat-users>`)
 
 ```bash
 <role rolename="manager-gui"/>
